@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -13,7 +13,7 @@ public class Client {
 	public static void main(String[] args) {
 		
 		// Hardcode in IP and Port here
-    	args = new String[] {"127.0.0.1", "30121"};
+    	args = new String[] {"127.0.0.1", "30142"};
     	
         if (args.length != 2) {
             System.err.println(
@@ -43,18 +43,24 @@ public class Client {
         		Request request = new Request();
         		submitRequest.writeObject(request);
         		System.out.println("Sending request "+request.getID()+" to Master.");
+        		try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}
         	String response;
         	while ((response = responseReader.readLine()) != null) {
-        		System.out.println(response);
+        		System.out.println("Master says: "+response);
         	}
         	
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                hostName);
+        	System.out.println(e);
+            System.err.println("Couldn't get I/O for the connection to " +hostName);
             System.exit(1);
         } 
 	}
