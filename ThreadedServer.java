@@ -29,7 +29,6 @@ public class ThreadedServer {
 			ArrayList<Thread> threads = new ArrayList<>();
 			for (int i = 0; i < THREADSOFEACH; i++) {
 				threads.add(new Thread(new ServerThread(clientSocket, slaveSocket, i, requests)));
-				//threads.add(new Thread(new ServerThread(slaveSocket, i, requests)));
 			}
 			for (Thread t : threads)
 				t.start();

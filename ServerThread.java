@@ -50,6 +50,9 @@ public class ServerThread implements Runnable {
 				responseWriter.println("Received your request "+request.getID());
 				requests.add(request);
 				
+				assignToSlave.writeObject(requests.remove());
+				System.out.println("Assigning request "+request.getID()+" to slave " + (id+1));
+				
 			}
 		} catch (IOException e) {
 			System.out.println(

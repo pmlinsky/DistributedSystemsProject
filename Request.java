@@ -8,11 +8,13 @@ public class Request implements Serializable, Comparable<Request> {
 	private int importance;
 	private static int ctr;
 	private int id;
+	private String name;
 
-	public Request() {
+	public Request(String name) {
 		Random random = new Random();
 		importance = random.nextInt(1000) + 1;
 		id = ++ctr;
+		this.name = name;
 
 	}
 
@@ -30,5 +32,9 @@ public class Request implements Serializable, Comparable<Request> {
 
 	public int compareTo(Request r) {
 		return this.importance - r.importance;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

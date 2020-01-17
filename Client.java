@@ -40,7 +40,7 @@ public class Client {
         ) {
         	
         	for (int i = 0; i < 10; i++) {
-        		Request request = new Request();
+        		Request request = new Request("name");
         		submitRequest.writeObject(request);
         		System.out.println("Sending request "+request.getID()+" to Master.");
         		try {

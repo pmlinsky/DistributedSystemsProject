@@ -30,8 +30,12 @@ public class Slave {
             ObjectInputStream jobFromMaster = new ObjectInputStream(slaveSocket.getInputStream());
         ) {
 
+        	System.out.println("Slave Connected.");
         	//MAYBE NEED A LOOP HERE :)
+        	notifyServer.println("I am available.");
         	Request job = (Request) jobFromMaster.readObject();
+        	System.out.println(job.getImportance());
+        	System.out.println("Received request "+job.getID());
         	TimeUnit.SECONDS.sleep(1);
         	notifyServer.println("Finished request "+job.getID());
 
