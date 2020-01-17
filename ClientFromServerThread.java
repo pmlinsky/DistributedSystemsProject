@@ -3,10 +3,8 @@ package semesterProject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 public class ClientFromServerThread implements Runnable {
 
@@ -27,7 +25,6 @@ public class ClientFromServerThread implements Runnable {
             		new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));      	
         ) {
         	
-        	Scanner keyboard = new Scanner(System.in);
         	while (true) {
         		String response;
             	while ((response = responseReader.readLine()) != null) {
