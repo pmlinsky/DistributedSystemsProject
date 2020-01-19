@@ -9,7 +9,7 @@ public class ThreadedServer {
 	public static void main(String[] args) {
 		
 		// Hardcode port number if necessary
-		args = new String[] {"30142", "30123"};
+		args = new String[] {"30146", "30142", "30123"};
 		
 		if (args.length != 2)
 		{
@@ -20,15 +20,22 @@ public class ThreadedServer {
 		
 		int portNumber1 = Integer.parseInt(args[0]);
 		int portNumber2 = Integer.parseInt(args[1]);
+		int portNumber3 = Integer.parseInt(args[2]);
+
 		final int THREADSOFEACH = 2;
-		PriorityQueue<Request> requests = new PriorityQueue<Request>();
+		PriorityQueue<Request> prioritizedRequests = new PriorityQueue<>();
+		ArrayList<Request> requests = new ArrayList<>();
 		
-		try (ServerSocket clientSocket = new ServerSocket(portNumber1);
-			 ServerSocket slaveSocket = new ServerSocket(portNumber2);) {
+		try (ServerSocket serverToClientSocket = new ServerSocket(portNumber1);
+			 ServerSocket serverFromClientSocket = new ServerSocket(portNumber2);
+			 ServerSocket serverToAndFromSlaveSocket = new ServerSocket(portNumber3)) {
 			
 			ArrayList<Thread> threads = new ArrayList<>();
 			for (int i = 0; i < THREADSOFEACH; i++) {
-				threads.add(new Thread(new ServerThread(clientSocket, slaveSocket, i, requests)));
+				threads.add(new Thread(new ServerToClientThread(serverToClientSocket, requests)));
+				threads.add(new Thread(new ServerFromClientThread
+						(serverFromClientSocket, requests, prioritizedRequests)));
+				
 			}
 			for (Thread t : threads)
 				t.start();

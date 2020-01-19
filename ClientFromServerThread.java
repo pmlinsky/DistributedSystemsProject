@@ -26,10 +26,8 @@ public class ClientFromServerThread implements Runnable {
         ) {
         	
         	while (true) {
-        		String response;
-            	while ((response = responseReader.readLine()) != null) {
-            		System.out.println("Master says: "+response);
-            	}
+        		String response = responseReader.readLine();
+            	System.out.println("Master says: "+response);
         	}
         	
         } catch (UnknownHostException e) {

@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class SlaveFromServerThread implements Runnable {
 
 	private String hostName;
 	private int portNumber;
+	private ArrayList<String> requestName;
 	
-	public SlaveFromServerThread(String hostName, int portNumber) {
+	public SlaveFromServerThread(String hostName, int portNumber, ArrayList<String> requestName) {
 		this.hostName = hostName;
 		this.portNumber = portNumber;
+		this.requestName = requestName;
 	}
 	
 	@Override
@@ -23,11 +26,11 @@ public class SlaveFromServerThread implements Runnable {
 	            ObjectInputStream jobFromMaster = new ObjectInputStream(slaveSocket.getInputStream());
 	        ) {
 
-	        	System.out.println("Slave Connected.");
-	        	//MAYBE NEED A LOOP HERE :)
+			while (true) {
 	        	Request job = (Request) jobFromMaster.readObject();
-	        	System.out.println(job.getImportance());
-	        	System.out.println("Received request "+job.getID());
+	        	requestName.add(job.getName());
+	        	System.out.println("Received request "+job.getID()+" of importance "+job.getImportance());
+			}
 	        	
 	        } catch (UnknownHostException e) {
 	            System.err.println("Don't know about host " + hostName);

@@ -1,11 +1,9 @@
 package semesterProject;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class Slave {
 
@@ -22,23 +20,32 @@ public class Slave {
 
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
+        final int THREADSOFEACH = 2;
 
         try (
-            Socket slaveSocket = new Socket(hostName, portNumber);
-            PrintWriter notifyServer = // stream to tell server when done
-                new PrintWriter(slaveSocket.getOutputStream(), true);
-            ObjectInputStream jobFromMaster = new ObjectInputStream(slaveSocket.getInputStream());
+            Socket slaveToServerSocket = new Socket(hostName, portNumber);
+        	Socket slaveFromServerSocket = new Socket(hostName, portNumber);
         ) {
 
-        	System.out.println("Slave Connected.");
-        	//MAYBE NEED A LOOP HERE :)
-        	notifyServer.println("I am available.");
-        	Request job = (Request) jobFromMaster.readObject();
-        	System.out.println(job.getImportance());
-        	System.out.println("Received request "+job.getID());
-        	TimeUnit.SECONDS.sleep(1);
-        	notifyServer.println("Finished request "+job.getID());
-
+        	ArrayList<Thread> threads = new ArrayList<>();
+   			for (int i = 0; i < THREADSOFEACH; i++) {
+   				
+   				ArrayList<String> requestName = new ArrayList<>();
+   				threads.add(new Thread(new SlaveToServerThread(hostName, portNumber, requestName)));
+   				threads.add(new Thread(new SlaveFromServerThread(hostName, portNumber, requestName)));
+   			}
+   			for (Thread t : threads)
+   				t.start();
+   			
+   			
+   			for (Thread t: threads)
+   			{
+   				try {
+   					t.join();
+   				} catch (InterruptedException e) {
+   					e.printStackTrace();
+   				}
+   			}
         	
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
@@ -46,13 +53,7 @@ public class Slave {
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " + hostName);
             System.exit(1);
-        } catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+        } 
 	}
 
 }

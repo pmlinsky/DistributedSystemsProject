@@ -30,12 +30,6 @@ public class ClientToServerThread implements Runnable {
         		Request request = new Request(name);
         		submitRequest.writeObject(request);
         		System.out.println("Sending request "+request.getID()+" to Master.");
-        		try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
         	}
         	
         } catch (UnknownHostException e) {

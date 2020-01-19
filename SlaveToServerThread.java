@@ -4,16 +4,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class SlaveToServerThread implements Runnable {
 
 	private String hostName;
 	private int portNumber;
+	private ArrayList<String> requestName;
 	
-	public SlaveToServerThread(String hostName, int portNumber) {
+	public SlaveToServerThread(String hostName, int portNumber, ArrayList<String> requestName) {
 		this.hostName = hostName;
 		this.portNumber = portNumber;
+		this.requestName = requestName;
 	}
 	
 	@Override
@@ -25,14 +28,18 @@ public class SlaveToServerThread implements Runnable {
 	                new PrintWriter(slaveSocket.getOutputStream(), true);
 	        ) {
 
-	        	System.out.println("Slave Connected.");
-	        	//MAYBE NEED A LOOP HERE :)
-	        	notifyServer.println("I am available.");
-	        	//Request job = (Request) jobFromMaster.readObject();
-	        	//System.out.println(job.getImportance());
-	        	System.out.println("Received request ");
-	        	TimeUnit.SECONDS.sleep(1);
-	        	notifyServer.println("Finished request ");
+	        	System.out.println("Slave Connected. Available to work.");
+	        	while (true) {
+	        		//only if there is something to do...
+	        		if (!requestName.isEmpty()) {
+		        		System.out.println("Received request "+requestName.get(0));
+		        		TimeUnit.SECONDS.sleep(1);
+		        		System.out.println("Finished request "+requestName.get(0));
+		        		notifyServer.println("Finished request. Now available again.");
+		        		notifyServer.println(requestName.remove(0));
+	        		}
+	        	}
+	        	
 
 	        	
 	        } catch (UnknownHostException e) {
