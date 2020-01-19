@@ -24,7 +24,6 @@ public class ThreadedServer {
 
 		final int THREADSOFEACH = 2;
 		PriorityQueue<Request> prioritizedRequests = new PriorityQueue<>();
-		ArrayList<Request> requests = new ArrayList<>();
 		
 		try (ServerSocket serverToClientSocket = new ServerSocket(portNumber1);
 			 ServerSocket serverFromClientSocket = new ServerSocket(portNumber2);
@@ -32,9 +31,13 @@ public class ThreadedServer {
 			
 			ArrayList<Thread> threads = new ArrayList<>();
 			for (int i = 0; i < THREADSOFEACH; i++) {
-				threads.add(new Thread(new ServerToClientThread(serverToClientSocket, requests)));
+				
+				ArrayList<Request> receivedRequests = new ArrayList<>();
+				ArrayList<String> completedRequest = new ArrayList<>();
+				threads.add(new Thread(new ServerToClientThread
+						(serverToClientSocket, receivedRequests, completedRequest)));
 				threads.add(new Thread(new ServerFromClientThread
-						(serverFromClientSocket, requests, prioritizedRequests)));
+						(serverFromClientSocket, receivedRequests, prioritizedRequests)));
 				
 			}
 			for (Thread t : threads)
