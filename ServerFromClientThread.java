@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
+import java.util.Vector;
+import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class ServerFromClientThread implements Runnable {
 	
 	// A reference to the server socket is passed in, all threads share it
 	private ServerSocket serverFromClientSocket;
-	private ArrayList<Request> receivedRequests = new ArrayList<>();
-	private PriorityQueue<Request> prioritizedRequests = new PriorityQueue<>();
+	private Vector<Request> receivedRequests;
+	private PriorityBlockingQueue<Request> prioritizedRequests;
 	
-	public ServerFromClientThread(ServerSocket serverSocket, ArrayList<Request> requests,
-										PriorityQueue<Request> prioritizedRequests) {
+	public ServerFromClientThread(ServerSocket serverSocket, Vector<Request> requests,
+										PriorityBlockingQueue<Request> prioritizedRequests) {
 		serverFromClientSocket = serverSocket;
 		this.receivedRequests = requests;
 		this.prioritizedRequests = prioritizedRequests;
@@ -34,7 +34,8 @@ public class ServerFromClientThread implements Runnable {
 			while (true) {
 				Request request = (Request) requestFromClient.readObject();
 				receivedRequests.add(request);
-				prioritizedRequests.add(request);				
+				prioritizedRequests.add(request);
+				System.out.println("Received request "+request.getID());
 			}
 			
 		} catch (IOException e) {

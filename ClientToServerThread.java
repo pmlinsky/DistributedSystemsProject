@@ -26,8 +26,8 @@ public class ClientToServerThread implements Runnable {
         	
         	Scanner keyboard = new Scanner(System.in);
         	while (true) {
-        		String name = keyboard.nextLine();
-        		Request request = new Request(name);
+        		//String name = keyboard.nextLine();
+        		Request request = new Request(keyboard.nextLine());
         		submitRequest.writeObject(request);
         		System.out.println("Sending request "+request.getID()+" to Master.");
         	}

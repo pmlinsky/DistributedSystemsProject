@@ -1,8 +1,8 @@
 package semesterProject;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
+import java.util.Vector;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class ThreadedServer {
 
@@ -11,7 +11,7 @@ public class ThreadedServer {
 		// Hardcode port number if necessary
 		args = new String[] {"30146", "30142", "30123"};
 		
-		if (args.length != 2)
+		if (args.length != 3)
 		{
 			System.err.println("Usage: java EchoServer <port number>");
 			System.exit(1);
@@ -23,23 +23,26 @@ public class ThreadedServer {
 		int portNumber3 = Integer.parseInt(args[2]);
 
 		final int THREADSOFEACH = 2;
-		PriorityQueue<Request> prioritizedRequests = new PriorityQueue<>();
+		PriorityBlockingQueue<Request> prioritizedRequests = new PriorityBlockingQueue<>();
 		
 		try (ServerSocket serverToClientSocket = new ServerSocket(portNumber1);
 			 ServerSocket serverFromClientSocket = new ServerSocket(portNumber2);
 			 ServerSocket serverToAndFromSlaveSocket = new ServerSocket(portNumber3)) {
 			
-			ArrayList<Thread> threads = new ArrayList<>();
+			Vector<Thread> threads = new Vector<>();
 			for (int i = 0; i < THREADSOFEACH; i++) {
 				
-				ArrayList<Request> receivedRequests = new ArrayList<>();
-				ArrayList<String> completedRequest = new ArrayList<>();
+				Vector<Request> receivedRequests = new Vector<>();
+				Vector<String> completedRequest = new Vector<>();
 				threads.add(new Thread(new ServerToClientThread
 						(serverToClientSocket, receivedRequests, completedRequest)));
 				threads.add(new Thread(new ServerFromClientThread
 						(serverFromClientSocket, receivedRequests, prioritizedRequests)));
+				threads.add(new Thread(new ServerToAndFromSlaveThread
+						(serverToAndFromSlaveSocket, prioritizedRequests, completedRequest)));
 				
 			}
+			threads.add(new Thread(new AgingThread(prioritizedRequests)));
 			for (Thread t : threads)
 				t.start();
 			

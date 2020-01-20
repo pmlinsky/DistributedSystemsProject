@@ -31,7 +31,7 @@ public class Request implements Serializable, Comparable<Request> {
 	}
 
 	public int compareTo(Request r) {
-		return this.importance - r.importance;
+		return r.importance - this.importance;
 	}
 	
 	public String getName() {

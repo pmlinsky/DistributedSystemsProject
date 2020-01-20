@@ -11,7 +11,7 @@ public class Client {
 		// Hardcode in IP and Port here
     	args = new String[] {"127.0.0.1", "30142", "30146"};
     	
-        if (args.length != 2) {
+        if (args.length != 3) {
             System.err.println(
                 "Usage: java EchoClient <host name> <port number>");
             System.exit(1);
@@ -20,7 +20,7 @@ public class Client {
         String hostName = args[0];
         int portNumber1 = Integer.parseInt(args[1]);
         int portNumber2 = Integer.parseInt(args[2]);
-        final int THREADSOFEACH = 2;
+        final int THREADSOFEACH = 1;
         
         try (Socket clientToServerSocket = new Socket(hostName, portNumber1);
    			 Socket clientFromServerSocket = new Socket(hostName, portNumber2);) {
